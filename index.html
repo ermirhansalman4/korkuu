@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karanlık Sırlar - Korku Forumu</title>
+    <!-- Sekme İkonu (Favicon) - Kurukafa -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💀</text></svg>">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tema CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Mouse Takibi Spot Işık Efekti -->
+    <div id="spotlight"></div>
+
+    <!-- Korkunç Arka Plan Müziği -->
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/03/24/audio_331b268297.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Üst Gezinme Çubuğu -->
+    <header>
+        <div class="header-container">
+            <h1 class="logo nav-link" data-target="home-view"
+                style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                <img class="logoo"
+                    src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💀</text></svg>"
+                    href="" alt="Logo"
+                    style="height: 45px; width: auto; filter: drop-shadow(0 0 8px rgba(139,0,0,0.8));">
+                Kabus
+            </h1>
+
+            <nav id="nav-list">
+                <a href="#" class="nav-link active" data-target="home-view">Ana Sayfa</a>
+                <a href="#" class="nav-link" data-target="stories-view">Tüm Kabuslar</a>
+                <a href="#" class="nav-link" data-target="chat-view">Kanlı Sohbet</a>
+                <a href="#" class="nav-link hidden" id="nav-profile" data-target="profile-view">Profilim</a>
+                <a href="#" class="nav-link hidden" id="nav-admin" data-target="admin-view">Araf (Admin)</a>
+            </nav>
+
+            <div class="auth-controls">
+                <!-- Ziyaretçi Kontrolleri -->
+                <div id="guest-controls">
+                    <button class="btn btn-outline" id="btn-login-modal">Giriş Yap</button>
+                    <button class="btn btn-primary" id="btn-register-modal">Ruhunu Teslim Et</button>
+                </div>
+
+                <!-- Kullanıcı Kontrolleri -->
+                <div id="user-controls" class="hidden">
+                    <span id="user-display-name" class="user-greeting">Hoşgeldin, Ruh</span>
+                    <button class="btn btn-primary hidden" id="btn-write-story">Yeni Lanet Yaz</button>
+                    <button class="btn btn-danger-outline" id="btn-logout" title="Çıkış Yap"><i
+                            class="fas fa-sign-out-alt"></i></button>
+                </div>
+
+                <div class="audio-toggle-container">
+                    <button id="audio-toggle" class="audio-toggle" title="Korku Müziğini Aç/Kapat">
+                        <i class="fas fa-volume-mute" id="audio-icon"></i>
+                    </button>
+                </div>
+
+                <div class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Toast Konteyneri -->
+        <div id="toast-container"></div>
+
+        <!-- 1. ANA SAYFA VIEW -->
+        <section id="home-view" class="view active">
+            <div class="hero-section">
+                <h2 class="hero-title">Korkuya Hoşgeldiniz</h2>
+                <p class="hero-subtitle">Burası en karanlık sırların paylaşıldığı yer. Yalnızca cesareti olanlar devam
+                    edebilir, çünkü okuduklarınız sonsuza dek zihninize kazınacak...</p>
+                <button class="btn btn-large btn-primary nav-link" data-target="stories-view"
+                    id="btn-hero-stories">Karanlığa Adım At</button>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card" onclick="window.switchView('stories-view')" style="cursor: pointer;">
+                    <i class="fas fa-book-dead feature-icon"></i>
+                    <h3>Gerçek Kabuslar</h3>
+                    <p>Topluluğumuzun paylaştığı, kan donduran hikayeleri okuyun.</p>
+                </div>
+                <div class="feature-card"
+                    onclick="if(document.getElementById('btn-write-story').classList.contains('hidden')){ window.openModal('login-modal'); } else { window.openModal('story-modal'); }"
+                    style="cursor: pointer;">
+                    <i class="fas fa-ghost feature-icon"></i>
+                    <h3>Ruhunu Bırak</h3>
+                    <p>Kendi cehenneminizi yazıya dökerek diğerlerini dehşete düşürün.</p>
+                </div>
+                <div class="feature-card" onclick="window.switchView('chat-view')" style="cursor: pointer;">
+                    <i class="fas fa-comment-dots feature-icon"></i>
+                    <h3>Kanlı Sohbet</h3>
+                    <p>Diğer ruhlarla eş zamanlı olarak dehşet verici sohbetlere katılın.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. HİKAYELER VIEW -->
+        <section id="stories-view" class="view">
+            <div class="view-header">
+                <h2>Tüm Kabuslar</h2>
+                <p>Uyumadan önce okunmaması tavsiye edilir...</p>
+            </div>
+            <div id="stories-container" class="stories-grid">
+                <!-- JS ile Doldurulacak -->
+            </div>
+        </section>
+
+        <!-- 3. CHAT VIEW -->
+        <section id="chat-view" class="view">
+            <div class="view-header">
+                <h2>Kanlı Sohbet</h2>
+                <p>Diğer lanetli ruhlarla konuş...</p>
+            </div>
+
+            <div id="chat-guest-warning" class="warning-box">
+                <i class="fas fa-exclamation-triangle"></i> Bu karanlık odaya girmek için giriş yapmalısın.
+            </div>
+
+            <div id="chat-wrapper" class="chat-container hidden">
+                <div id="chat-messages" class="chat-messages">
+                    <!-- JS Mesajları -->
+                </div>
+                <form id="chat-form" class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Zifiri karanlığa fısılda..." autocomplete="off">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 4. PROFİL VIEW -->
+        <section id="profile-view" class="view">
+            <div class="profile-header-card">
+                <div class="profile-avatar"><i class="fas fa-user-ghost"></i></div>
+                <div class="profile-info">
+                    <h2 id="profile-username">Kullanıcı Adı</h2>
+                    <p id="profile-email" class="text-muted">email@example.com</p>
+                    <div class="profile-bio-box">
+                        <p id="profile-bio">Karanlıkta bekleyen yeni bir ruh...</p>
+                        <button id="btn-edit-profile" class="btn btn-outline btn-sm mt-3"><i class="fas fa-pen"></i>
+                            Kaderini Düzenle</button>
+                    </div>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <span class="stat-num" id="stat-story-count">0</span>
+                        <span class="stat-label">Yazılan Kabus</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mt-5 mb-4" style="color:var(--blood-red); font-family:var(--font-heading); font-size: 2rem;">
+                Lanetli Eserlerim</h3>
+            <div id="profile-stories-container" class="stories-grid">
+                <!-- JS -->
+            </div>
+        </section>
+
+        <!-- 5. ADMIN VIEW -->
+        <section id="admin-view" class="view">
+            <div class="view-header">
+                <h2 class="text-danger"><i class="fas fa-skull"></i> Seçilmiş Araf Yöneticisi</h2>
+                <p>Kaderleri belirleme gücü sende.</p>
+            </div>
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Hikaye Başlığı</th>
+                            <th>Yazar</th>
+                            <th>Tarih</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-stories-tbody">
+                        <!-- JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Karanlık Sırlar Forumu. Geceleri arkanıza bakmadan yürüyün...</p>
+            <div class="social-links mt-3">
+                <a href="https://instagram.com/emirslmn_" target="_blank"><i class="fab fa-instagram"></i> emirslmn_</a>
+                <a href="https://github.com/ermirhansalman4" target="_blank"><i class="fab fa-github"></i>
+                    ermirhansalman4</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL VİTRİNİ -->
+
+    <!-- Giriş Modalı -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"><i class="fas fa-times"></i></span>
+            <h2 class="modal-title">Oturum Aç</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>E-posta</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary full-width">Giriş Yap</button>
+            </form>
+            <p class="text-center mt-4 text-muted">Ruhun henüz teslim alınmadı mı? <br><a href="#"
+                    onclick="window.closeModal(); window.openModal('register-modal');" class="blood-link">Kayıt Ol</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Kayıt Modalı -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"><i class="fas fa-times"></i></span>
+            <h2 class="modal-title">Ruhunu Teslim Et</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label>Lanetli İsmin (Kullanıcı Adı)</label>
+                    <input type="text" id="reg-username" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label>E-posta</label>
+                    <input type="email" id="reg-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" id="reg-password" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary full-width">Kayıt Ol</button>
+            </form>
+            <p class="text-center mt-4 text-muted">Zaten lanetli bir fani misin? <br><a href="#"
+                    onclick="window.closeModal(); window.openModal('login-modal');" class="blood-link">Giriş Yap</a></p>
+        </div>
+    </div>
+
+    <!-- Hikaye Modalı (Ekle/Düzenle) -->
+    <div id="story-modal" class="modal">
+        <div class="modal-content modal-lg">
+            <span class="close-btn"><i class="fas fa-times"></i></span>
+            <h2 class="modal-title" id="story-modal-title">Dehşeti Yaz</h2>
+            <form id="story-form">
+                <input type="hidden" id="story-id">
+                <div class="form-group">
+                    <label>Başlık</label>
+                    <input type="text" id="story-title" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Kabus Detayları</label>
+                    <textarea id="story-content" required placeholder="Kan dondurucu detayları anlat..."
+                        rows="10"></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger full-width">Dünyaya Sal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Profil Düzenleme Modalı -->
+    <div id="profile-edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"><i class="fas fa-times"></i></span>
+            <h2 class="modal-title">Kaderini Değiştir</h2>
+            <form id="profile-edit-form">
+                <div class="form-group">
+                    <label>Profil Görseli (İsteğe Bağlı)</label>
+                    <input type="file" id="edit-avatar-file" accept="image/*" style="padding: 0.5rem;">
+                </div>
+                <div class="form-group">
+                    <label>Hakkında</label>
+                    <textarea id="edit-bio" rows="4" placeholder="Karanlık sırlarından bahset..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary full-width">Güncelle</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Silme Onay Modalı -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content text-center horror-glow">
+            <h2 class="modal-title text-danger" style="font-size: 2.5rem;"><i class="fas fa-exclamation-triangle"></i>
+                Geri Dönüş Yok!</h2>
+            <p class="mb-4">Bu laneti gerçekten hiçe sayıp sonsuza dek boşluğa yollamak istiyor musun?</p>
+            <div class="flex-center">
+                <button id="btn-cancel-delete" class="btn btn-outline mr-3">Hayır, Kalsın</button>
+                <button id="btn-confirm-delete" class="btn btn-danger">Evet, Yok Et!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tam Hikaye Okuma Modalı -->
+    <div id="read-story-modal" class="modal">
+        <div class="modal-content modal-lg">
+            <span class="close-btn"><i class="fas fa-times"></i></span>
+            <h2 class="modal-title" id="read-story-title" style="margin-bottom:0.5rem; word-break: break-word;">Başlık
+            </h2>
+            <div class="text-muted text-center mb-4" id="read-story-meta">Yazar: ... | Tarih: ...</div>
+            <div id="read-story-content"
+                style="line-height: 1.8; white-space: pre-wrap; font-size: 1.1rem; max-height: 50vh; overflow-y: auto; padding-right: 1rem;">
+                İçerik...
+            </div>
+            <div class="mt-4 flex-center" id="read-story-actions"
+                style="border-top: 1px solid #333; padding-top: 1rem;">
+                <!-- Beğeni göstergesi js ile dolar -->
+            </div>
+
+            <!-- Yorumlar Bölümü -->
+            <div class="comment-section mt-5" style="border-top: 2px solid #222; padding-top: 2rem;">
+                <h3 style="font-family: var(--font-heading); color: var(--blood-red); margin-bottom: 1.5rem;">Lanetli Yorumlar</h3>
+                <div id="comments-container" style="max-height: 300px; overflow-y: auto; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- JS ile dolacak -->
+                </div>
+                
+                <div id="comment-guest-warning" class="text-muted text-center py-3">
+                    Yorum bırakmak için giriş yapmalısın.
+                </div>
+
+                <form id="comment-form" class="hidden">
+                    <div class="form-group">
+                        <textarea id="comment-text" placeholder="Bu dehşet hakkında ne düşünüyorsun?" rows="3" required style="min-height: 80px;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Fısılda</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module" src="script.js?v=4"></script>
+</body>
+
+</html>
